@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forever Valentine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { background-color: #fbc2eb; overflow-x: hidden; font-family: 'Georgia', serif; }
+
+        .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #fbc2eb, #a6c1ee, #ffdde1, #ffd1ff);
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite; z-index: -1;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* --- PAGE 1: THE QUESTION --- */
+        #page1 { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10; position: relative; }
+        .title { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 10vw, 5rem); color: white; text-shadow: 2px 2px 15px rgba(255, 77, 109, 0.8); margin-bottom: 30px; }
+        .btn { padding: 15px 40px; font-size: 1.5rem; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 10px; }
+        #yesBtn { background: #ff4d6d; color: white; box-shadow: 0 0 20px rgba(255, 77, 109, 0.5); }
+        #noBtn { background: white; color: #333; }
+
+        /* --- PAGE 2: THE GALLERY --- */
+        #page2 { display: none; position: relative; width: 100%; min-height: 11000px; padding: 50px 0; }
+
+        /* --- PHOTO SPACES & SHAPES --- */
+        .photo-space {
+            position: absolute; background: white; padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 400px; height: 400px;
+            opacity: 0; transform: scale(0.5) translateY(50px); transition: 1.2s all cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        .photo-space img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* SHAPES */
+        .shape-heart { clip-path: path('M200,360 C200,360 40,250 40,130 C40,70 90,40 140,40 C170,40 190,55 200,80 C210,55 230,40 260,40 C310,40 360,70 360,130 C360,250 200,360 200,360 Z'); }
+        .shape-cloud { border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; }
+        .shape-flower { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .shape-diamond { transform: rotate(45deg); }
+        .shape-diamond img { transform: rotate(-45deg) scale(1.4); }
+        .shape-circle { border-radius: 50%; }
+        .shape-polaroid { border-bottom: 60px solid white; height: 460px; }
+
+        /* --- LOVE NOTES --- */
+        .love-note {
+            position: absolute; background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px); border: 2px solid rgba(255,255,255,0.5);
+            color: #fff; padding: 25px; border-radius: 25px;
+            max-width: 350px; font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            opacity: 0; transition: 1s ease-in;
+            animation: floatAnim 4s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        .reveal { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
+
+        /* --- DECORATIONS --- */
+        .heart-particle { position: fixed; top: -10%; pointer-events: none; animation: fall linear forwards; z-index: 1; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="animated-bg"></div>
+
+    <div id="page1">
+        <h1 class="title">Will you be my Valentine?</h1>
+        <button id="yesBtn" class="btn" onclick="startSurprise()">YES! ❤️</button>
+        <button id="noBtn" class="btn" onmouseover="moveNo()">NO</button>
+    </div>
+
+    <div id="page2">
+        <div id="content-container"></div>
+    </div>
+
+    <script>
+        function moveNo() {
+            const btn = document.getElementById('noBtn');
+            btn.style.position = 'fixed';
+            btn.style.top = Math.random() * 80 + 10 + 'vh';
+            btn.style.left = Math.random() * 80 + 10 + 'vw';
+        }
+
+        function startSurprise() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+            buildScrapbook();
+        }
+
+        function buildScrapbook() {
+            const container = document.getElementById('content-container');
+            
+            // --- EDIT YOUR LOCAL IMAGE FILENAMES HERE ---
+            const photos = [
+                { src: "https://placedog.net/400/400", t: 200, l: 10, s: "shape-heart" },
+                { src: "p2.jpg", t: 1200, l: 55, s: "shape-polaroid" },
+                { src: "p3.jpg", t: 2200, l: 15, s: "shape-cloud" },
+                { src: "p4.jpg", t: 3200, l: 50, s: "shape-flower" },
+                { src: "p5.jpg", t: 4200, l: 10, s: "shape-diamond" },
+                { src: "p6.jpg", t: 5200, l: 55, s: "shape-circle" },
+                { src: "p7.jpg", t: 6200, l: 15, s: "shape-heart" },
+                { src: "p8.jpg", t: 7200, l: 50, s: "shape-polaroid" },
+                { src: "p9.jpg", t: 8200, l: 10, s: "shape-flower" },
+                { src: "p10.jpg", t: 9200, l: 55, s: "shape-heart" }
+            ];
+
+            const notes = [
+                { text: "My favorite place in the world is right next to you.", t: 750, l: 50 },
+                { text: "You make my heart skip a beat every single time.", t: 1750, l: 10 },
+                { text: "Every memory with you is a treasure I keep forever.", t: 2750, l: 60 },
+                { text: "Thank you for being my constant in this crazy world.", t: 3750, l: 15 },
+                { text: "You're the person I want to talk to before I go to sleep.", t: 4750, l: 55 },
+                { text: "I love our little adventures and inside jokes.", t: 5750, l: 10 },
+                { text: "You're the best thing that ever happened to me.", t: 6750, l: 60 },
+                { text: "I fall in love with you more and more every day.", t: 7750, l: 15 },
+                { text: "I promise to always hold your hand and your heart.", t: 8750, l: 55 },
+                { text: "You are my forever and always. Happy Valentine's Day! ❤️", t: 10200, l: 30 }
+            ];
+
+            // Build Photos
+            photos.forEach((p) => {
+                const div = document.createElement('div');
+                div.className = `photo-space ${p.s}`;
+                div.style.top = p.t + 'px';
+                div.style.left = p.l + '%';
+                
+                // Traditional img tag linking to your local file
+                div.innerHTML = `<img src="${p.src}" alt="Memory" onerror="this.src='https://via.placeholder.com/400x400?text=Image+Not+Found'">`;
+                container.appendChild(div);
+                
+                window.addEventListener('scroll', () => {
+                    const scrollPos = window.scrollY + window.innerHeight;
+                    if (scrollPos > p.t + 100) div.classList.add('reveal');
+                });
+            });
+
+            // Build Notes
+            notes.forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'love-note';
+                div.style.top = n.t + 'px';
+                div.style.left = n.l + '%';
+                div.innerText = n.text;
+                container.appendChild(div);
+                
+                window.addEventListener('scroll', () => {
+                    const scrollPos = window.scrollY + window.innerHeight;
+                    if (scrollPos > n.t + 100) div.classList.add('reveal');
+                });
+            });
+        }
+
+        // Falling Heart Particles
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.innerHTML = '💖'; h.className = 'heart-particle';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            h.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
+        }, 300);
+    </script>
+</body>
+</html>
